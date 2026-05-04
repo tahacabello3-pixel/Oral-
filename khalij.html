@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>🦷 Gulf Questions — اسئلة الخليج</title>
+<style>
+:root{
+  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#f8fafc;--border:#e2e8f0;
+  --text:#0f172a;--text2:#334155;--text3:#64748b;
+  --teal:#0d9488;--teal-dim:#f0fdf9;--teal-border:#5eead4;
+  --amber-bg:#fffbeb;--amber-brd:#f59e0b;--amber-txt:#78350f;
+  --red-bg:#fff5f5;--red-brd:#ef4444;--red-txt:#7f1d1d;
+  --blue-bg:#eff6ff;--blue-brd:#3b82f6;--blue-txt:#1e3a8a;
+  --purple-bg:#fdf4ff;--purple-brd:#d8b4fe;--purple-txt:#581c87;
+  --card-shadow:0 1px 4px rgba(0,0,0,.06);
+  --topbar-bg:rgba(255,255,255,.93);--scrollbar:#c8d3e0;
+}
+.dark{
+  --bg:#0f1117;--bg2:#1a1d27;--bg3:#13161f;--border:#2a2d3a;
+  --text:#e8eaf0;--text2:#c4c9d8;--text3:#7c8299;
+  --teal:#2dd4bf;--teal-dim:#0d2420;--teal-border:#0f766e;
+  --amber-bg:#1f1500;--amber-brd:#d97706;--amber-txt:#fcd34d;
+  --red-bg:#1f0505;--red-brd:#ef4444;--red-txt:#fca5a5;
+  --blue-bg:#050f1f;--blue-brd:#3b82f6;--blue-txt:#93c5fd;
+  --purple-bg:#1a0a2e;--purple-brd:#7c3aed;--purple-txt:#c4b5fd;
+  --card-shadow:0 1px 6px rgba(0,0,0,.4);
+  --topbar-bg:rgba(26,29,39,.95);--scrollbar:#2e3347;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);transition:background .2s,color .2s;min-height:100vh}
+.fade{animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Layout */
+.sidebar{width:260px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);height:100vh;overflow-y:auto;position:fixed;left:0;top:0;z-index:40;transition:transform .25s,background .2s}
+.sidebar.closed{transform:translateX(-260px)}
+.sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:4px}
+.main{margin-left:260px;min-height:100vh;transition:margin .25s}
+.main.full{margin-left:0}
+.topbar{position:sticky;top:0;z-index:30;background:var(--topbar-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.content{padding:20px;max-width:900px}
+
+/* Sidebar */
+.sidebar-header{background:linear-gradient(135deg,#0d9488,#0891b2);padding:20px 16px;color:#fff}
+.sidebar-header h1{font-size:15px;font-weight:900;margin-bottom:2px}
+.sidebar-header p{font-size:11px;opacity:.85}
+.sidebar-nav{padding:8px}
+.nav-section{font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:12px 10px 4px}
+.nav-btn{width:100%;text-align:left;padding:9px 12px;border:none;background:transparent;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:8px;transition:background .12s,color .12s}
+.nav-btn:hover{background:var(--teal-dim);color:var(--teal)}
+.nav-btn.active{background:var(--teal-dim);color:var(--teal);font-weight:800}
+.nav-btn .cnt{margin-left:auto;font-size:11px;background:var(--teal-dim);color:var(--teal);padding:1px 7px;border-radius:999px;font-weight:700}
+
+/* Topbar */
+.topbar-title{font-size:14px;font-weight:800;color:var(--text)}
+.icon-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:background .12s}
+.icon-btn:hover{background:var(--teal-dim)}
+.mob-toggle{display:none;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;font-size:18px}
+
+/* Progress bar */
+.prog-bar{height:5px;border-radius:999px;background:var(--border);overflow:hidden;flex:1;max-width:200px}
+.prog-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0d9488,#06b6d4);transition:width .35s}
+
+/* Card */
+.card{background:var(--bg2);border-radius:14px;border:1px solid var(--border);box-shadow:var(--card-shadow);overflow:hidden;transition:background .2s,border-color .2s}
+.card-hover{transition:box-shadow .18s,transform .18s}
+.card-hover:hover{box-shadow:0 4px 16px rgba(0,0,0,.15);transform:translateY(-1px)}
+
+/* Badges */
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.02em;display:inline-block}
+.badge-teal{background:#ccfbf1;color:#0f766e}.dark .badge-teal{background:#0a2e29;color:#2dd4bf}
+.badge-blue{background:#dbeafe;color:#1d4ed8}.dark .badge-blue{background:#071232;color:#60a5fa}
+.badge-amber{background:#fef3c7;color:#92400e}.dark .badge-amber{background:#2a1800;color:#fcd34d}
+.badge-violet{background:#ede9fe;color:#6d28d9}.dark .badge-violet{background:#1e1040;color:#a78bfa}
+.badge-rose{background:#ffe4e6;color:#be123c}.dark .badge-rose{background:#2a0510;color:#fb7185}
+.badge-gulf{background:#fdf4ff;color:#7e22ce;border:1px solid #d8b4fe}.dark .badge-gulf{background:#1a0a2e;color:#c4b5fd}
+
+/* Study mode */
+.q-card{margin-bottom:12px;border-radius:12px;border:1px solid var(--border);background:var(--bg2);overflow:hidden}
+.q-card-header{display:flex;align-items:flex-start;gap:10px;padding:14px 16px;cursor:pointer;border:none;background:transparent;width:100%;text-align:left}
+.q-num{width:24px;height:24px;border-radius:50%;background:#ccfbf1;color:#0f766e;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.dark .q-num{background:#0a2e29;color:#2dd4bf}
+.q-text{flex:1;min-width:0;font-size:13.5px;font-weight:600;color:var(--text);line-height:1.55}
+.opt{display:block;font-size:12.5px;color:var(--text3);margin:2px 0;padding-left:4px}
+.opt.correct{color:#0f766e;font-weight:700}.dark .opt.correct{color:#2dd4bf}
+.q-card-body{padding:0 14px 14px;border-top:1px solid var(--border)}
+.ans-box{background:var(--teal-dim);border:1.5px solid var(--teal-border);border-left:4px solid var(--teal);border-radius:8px;padding:8px 11px;font-weight:700;color:#065f46;font-size:13px;margin-top:10px}
+.dark .ans-box{color:var(--teal)}
+.ref-box{background:var(--blue-bg);border:1px solid var(--blue-brd);border-radius:6px;padding:6px 9px;font-size:11.5px;color:var(--blue-txt);margin-top:8px;line-height:1.6}
+.gulf-box{background:var(--purple-bg);border:1.5px solid var(--purple-brd);border-left:4px solid #9333ea;border-radius:8px;padding:8px 11px;font-size:12px;color:var(--purple-txt);margin-top:8px;line-height:1.6}
+.dark .gulf-box{border-left-color:#7c3aed}
+
+/* Exam mode */
+.exam-wrap{max-width:640px;margin:0 auto;padding:24px 16px}
+.exam-opt{text-align:left;padding:11px 15px;border-radius:10px;border:2px solid var(--border);background:var(--bg3);color:var(--text);font-size:13.5px;font-weight:600;cursor:pointer;transition:border-color .15s,background .15s,color .15s;margin-bottom:8px;width:100%;display:block}
+.exam-opt:hover:not(:disabled){border-color:var(--teal);background:var(--teal-dim);color:var(--teal)}
+.exam-opt.selected{border-color:var(--teal);background:var(--teal-dim);color:var(--teal)}
+.exam-opt.correct{border-color:#22c55e;background:#f0fdf4;color:#166534}
+.dark .exam-opt.correct{background:#052e16;color:#86efac}
+.exam-opt.wrong{border-color:#ef4444;background:#fff1f2;color:#991b1b}
+.dark .exam-opt.wrong{background:#2a0505;color:#fca5a5}
+.exam-opt.reveal-correct{border-color:#22c55e;background:#f0fdf4;color:#166534;opacity:.8}
+.dark .exam-opt.reveal-correct{background:#052e16;color:#86efac}
+.exam-btn{padding:10px 20px;border-radius:9px;font-size:13.5px;font-weight:700;cursor:pointer;border:none;transition:opacity .15s}
+.btn-teal{background:#0d9488;color:#fff}
+.btn-teal:disabled{background:var(--border);color:var(--text3);cursor:default}
+.btn-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-gray:disabled{opacity:.4;cursor:default}
+.score-card{background:linear-gradient(135deg,#059669,#0d9488);border-radius:20px;padding:28px;color:#fff;text-align:center;margin-bottom:16px}
+
+/* Dashboard */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border-radius:12px;border:1px solid var(--border);padding:16px;text-align:center}
+.stat-num{font-size:28px;font-weight:900;color:var(--teal)}
+.stat-lbl{font-size:11px;color:var(--text3);font-weight:600;margin-top:2px}
+.section-card{border-radius:14px;border:1px solid var(--border);background:var(--bg2);overflow:hidden;margin-bottom:12px;cursor:pointer;transition:box-shadow .18s,transform .18s}
+.section-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.15);transform:translateY(-1px)}
+.section-header-bar{padding:16px 18px;display:flex;align-items:center;gap:12px}
+.section-body{padding:14px 18px;border-top:1px solid var(--border);font-size:12.5px;color:var(--text3);line-height:1.7}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filter-chip{padding:5px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--bg2);font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .12s}
+.filter-chip.on{border-color:var(--teal);background:var(--teal-dim);color:var(--teal)}
+.search-box{flex:1;min-width:160px;padding:7px 12px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;outline:none;transition:border-color .15s}
+.search-box:focus{border-color:var(--teal)}
+
+/* Section headers */
+.sh{background:linear-gradient(135deg,var(--teal),#0891b2);color:#fff;padding:14px 18px;border-radius:12px 12px 0 0;margin-bottom:0}
+.sh h3{font-size:14px;font-weight:900;margin:0}
+.sh p{font-size:11px;opacity:.85;margin:3px 0 0}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-260px)}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}.mob-toggle{display:flex}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="font-size:26px">🦷</span>
+      <div>
+        <h1>اسئلة الخليج</h1>
+        <p>Gulf Questions Bank</p>
+      </div>
+    </div>
+    <p style="font-size:11px;opacity:.75">by Dr. Ghada · Oral Histology</p>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Overview</div>
+    <button class="nav-btn active" onclick="showView('dashboard')" id="nav-dashboard">
+      <span>🏠</span> Dashboard <span class="cnt">126</span>
+    </button>
+
+    <div class="nav-section">Study Mode</div>
+    <button class="nav-btn" onclick="showView('study-all')" id="nav-study-all">
+      <span>📖</span> All Questions <span class="cnt">126</span>
+    </button>
+    <button class="nav-btn" onclick="showView('study-14')" id="nav-study-14">
+      <span>🦷</span> Oral Mucosa & Gingiva <span class="cnt">52</span>
+    </button>
+    <button class="nav-btn" onclick="showView('study-15')" id="nav-study-15">
+      <span>🫧</span> Salivary Glands <span class="cnt">31</span>
+    </button>
+    <button class="nav-btn" onclick="showView('study-9')" id="nav-study-9">
+      <span>🔗</span> PDL <span class="cnt">43</span>
+    </button>
+
+    <div class="nav-section">Exam Mode</div>
+    <button class="nav-btn" onclick="showView('exam-all')" id="nav-exam-all">
+      <span>🎯</span> Full Exam <span class="cnt">126</span>
+    </button>
+    <button class="nav-btn" onclick="showView('exam-14')" id="nav-exam-14">
+      <span>🦷</span> Oral Mucosa Exam <span class="cnt">52</span>
+    </button>
+    <button class="nav-btn" onclick="showView('exam-15')" id="nav-exam-15">
+      <span>🫧</span> Salivary Exam <span class="cnt">31</span>
+    </button>
+    <button class="nav-btn" onclick="showView('exam-9')" id="nav-exam-9">
+      <span>🔗</span> PDL Exam <span class="cnt">43</span>
+    </button>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main" id="main">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="mob-toggle" id="mob-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-title" id="topbar-title">Dashboard</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="prog-bar" id="topbar-prog" style="display:none">
+        <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+      <span id="prog-label" style="font-size:12px;color:var(--text3);display:none"></span>
+      <button class="icon-btn" id="dark-btn" onclick="toggleDark()">🌙</button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="view-content"></div>
+</div>
+
+<script>
+// ═══════════════ DATA ═══════════════
+const QUESTIONS = [
+  // ── Sheet 14: Oral Mucosa & Gingiva (Q1–Q52) ──
+  {id:1,sheet:14,q:"Which of the following is correct:",opts:["Non-keratinized epithelium — absent stratum granulosum & corneum; surface cells nucleated","Para-keratinized — superficial cells with pyknotic nuclei; absent stratum granulosum","Orthokeratinization — superficial cells lose nuclei; stratum granulosum present","All of the above"],ans:3,ref:"Sheet 14 · All three types described are correct features of their respective keratinization types.",gulf:"Non-keratinized: 3 layers (basal, intermediate, superficial) — no keratin layer, surface cells retain nuclei."},
+  {id:2,sheet:14,q:"Long connective tissue papillae and keratinized epithelia are a feature of:",opts:["Gingiva and alveolar mucosa","Hard palate and gingiva","Buccal and alveolar mucosa","Hard and soft palate"],ans:1,ref:"Sheet 14 · Masticatory mucosa (hard palate, gingiva) = keratinized epithelium + pronounced rete ridges + CT papillae.",gulf:"Masticatory mucosa = keratinized + long CT papillae. Alveolar/buccal mucosa = lining mucosa (non-keratinized)."},
+  {id:3,sheet:14,q:"All lined by stratified squamous epithelium, EXCEPT:",opts:["Lips","Tongue","Roof of the soft palate","Oropharynx"],ans:2,ref:"Sheet 14 · The nasal (superior) surface of the soft palate is lined by pseudostratified columnar ciliated (respiratory) epithelium.",gulf:"The oral surface of soft palate = non-keratinized SSE; its nasal/roof surface = respiratory epithelium (PSCC)."},
+  {id:4,sheet:14,q:"Membrane coating granules (Odland bodies / keratinosomes) may:",opts:["Appear as circular with amorphous core in keratinized epithelium","Originate from the Golgi system","Packed with tonofilaments","Helps in adhesion of fully keratinized epithelial cells"],ans:1,ref:"Sheet 14 · Keratinosome granules originate from Golgi bodies.",gulf:"Odland bodies originate from Golgi → discharge glycoprotein into intercellular space → permeability barrier between granular and keratin layers."},
+  {id:5,sheet:14,q:"Basement membrane:",opts:["Contains lamina lucida & lamina dura","Consists of keratohyaline granules","Consists of lamina densa and lamina lucida","Consists of desmosomes and hemi desmosomes"],ans:2,ref:"Sheet 14 · Basement membrane = lamina lucida (clear zone) + lamina densa (dark zone).",gulf:"BM = lamina lucida (light) + lamina densa (dark). Desmosomes connect epithelial cells, hemidesmosomes to BM."},
+  {id:6,sheet:14,q:"The high level clear cell present in the oral epithelium is:",opts:["Melanocyte","Lymphocyte","Merkel cell","Langerhans cell"],ans:3,ref:"Sheet 14 · Langerhans cells in spinous layer are the classic 'clear / high-level clear cells' of oral epithelium.",gulf:"Langerhans cells: bone marrow derivative, dendritic, spinous layer, antigen presenting (immune). Gold chloride stain."},
+  {id:7,sheet:14,q:"Von Ebner's glands open into which papilla:",opts:["Foliate","Filiform","Circumvallate","Fungiform"],ans:2,ref:"Sheet 14 · Von Ebner's minor salivary glands open at the sulcus of circumvallate papillae.",gulf:"Von Ebner's = only SEROUS minor gland. Opens into trough of circumvallate papillae to wash taste buds."},
+  {id:8,sheet:14,q:"Dendritic cell located in stratified squamous keratinizing epithelium:",opts:["Keratinocytes","Mast cells","Melanocytes","Myoepithelial cells"],ans:2,ref:"Sheet 14 · Melanocytes have cytoplasmic dendritic processes; located in basal layer; neural crest origin.",gulf:"Melanocytes = dendritic, basal layer, neural crest, produce melanin. Langerhans cells also dendritic but in spinous layer."},
+  {id:9,sheet:14,q:"After the eruption of crown, reduced enamel epithelium is known as:",opts:["Primary attachment epithelium","Secondary attachment epithelium","Enamel cuticle","Nasmyth's membrane"],ans:0,ref:"Sheet 14 · After tooth eruption, the reduced enamel epithelium becomes the primary attachment epithelium (junctional epithelium).",gulf:"Primary attachment epithelium = reduced enamel epithelium post-eruption = initial junctional epithelium."},
+  {id:10,sheet:14,q:"Non keratinized oral mucosa has:",opts:["Stratum granulosum","No stratum corneum","Stratum corneum","Both A and B"],ans:3,ref:"Sheet 14 · Non-keratinized: no stratum granulosum AND no stratum corneum.",gulf:"Non-keratinized = absent stratum granulosum AND stratum corneum. Both B (no corneum) and A (granulosum present in some) — answer D = both A+B correct."},
+  {id:11,sheet:14,q:"Junctional epithelium is:",opts:["Parakeratinized","Orthokeratinized","Non-keratinized","Specialized mucosa"],ans:2,ref:"Sheet 14 · Junctional epithelium = non-keratinized, no rete ridges.",gulf:"JE = non-keratinized (0% keratinized). Fastest turnover: 3–5 days. Attached to enamel via hemidesmosomes + internal BL."},
+  {id:12,sheet:14,q:"The predominant type of gingival epithelium is:",opts:["Non-keratinized","Orthokeratinized","Parakeratinized","Specialized"],ans:2,ref:"Sheet 14 · Parakeratinized epithelium represents 75% of the gingiva.",gulf:"75% gingiva = parakeratinized. 15% = orthokeratinized. 10% = non-keratinized (sulcus, col, JE)."},
+  {id:13,sheet:14,q:"The most rapidly dividing cells of oral epithelium are:",opts:["Langerhans cells","Keratinocytes","Melanocytes","Merkel cells"],ans:1,ref:"Sheet 14 · Keratinocytes are the proliferating epithelial cells. JE keratinocytes have the fastest turnover.",gulf:"Keratinocytes = the cells that divide in stratum germinativum. JE renewal = 3–5 days (fastest). Buccal = 4–10 days."},
+  {id:14,sheet:14,q:"Type of epithelium present in vestibular sulcus:",opts:["Keratinized","Parakeratinized","Non-keratinized","Orthokeratinized"],ans:2,ref:"Sheet 14 · Vestibular sulcus = alveolar mucosa = lining mucosa = non-keratinized.",gulf:"Vestibular sulcus = non-keratinized lining mucosa. Only gingiva + hard palate = keratinized (masticatory mucosa)."},
+  {id:15,sheet:14,q:"The sulcular epithelium:",opts:["Has no rete pegs","Is ortho keratinized","Is similar to attached gingival epithelium","Is para-keratinized"],ans:0,ref:"Sheet 14 · Sulcus epithelium is non-keratinized without rete ridges.",gulf:"Sulcus epithelium = non-keratinized, no rete ridges, smooth surface, filled with gingival fluid."},
+  {id:16,sheet:14,q:"Elongated rete pegs are seen in:",opts:["Alveolar mucosa","Floor of the mouth","Attached gingiva","Buccal mucosa"],ans:2,ref:"Sheet 14 · Attached gingiva has heavy epithelial ridges adapted to mechanical force.",gulf:"Attached gingiva = masticatory mucosa with prominent rete ridges. Lining mucosa has few/absent rete ridges."},
+  {id:17,sheet:14,q:"The connective tissue of the gingiva is known as the:",opts:["Lamina dura","Dental cuticle","Lamina propria","Fibroblasts"],ans:2,ref:"Sheet 14 · Lamina propria with variable thickness provides support and metabolic exchange into epithelium.",gulf:"Lamina propria = CT below oral epithelium; papillary (loose CT) + reticular (dense CT) zones."},
+  {id:18,sheet:14,q:"Color of the normal gingiva is:",opts:["Pink","Red","Coral pink","None of the above"],ans:2,ref:"Sheet 14 · Attached gingiva is clinically described as coral pink.",gulf:"Normal gingiva = coral pink. Inflamed gingiva = red. Dark pigmentation due to melanin is also normal in some individuals."},
+  {id:19,sheet:14,q:"Epithelium of oral mucous membrane is:",opts:["Keratinized","Non keratinized","Ortho, para and non keratinized","Only para keratinized"],ans:2,ref:"Sheet 14 · All three types exist in oral mucosa: non-keratinized, orthokeratinized, and parakeratinized.",gulf:"All 3 types present: Orthokeratinized (hard palate), Parakeratinized (75% attached gingiva), Non-keratinized (lining mucosa)."},
+  {id:20,sheet:14,q:"The position of mucogingival line:",opts:["Shifts apically with age","Shifts coronally with age","Constant throughout the life","None of the above"],ans:2,ref:"Sheet 14 · The mucogingival junction (MGJ) remains at a relatively fixed position throughout life.",gulf:"MGJ = fixed landmark. JE migrates apically with age (passive eruption). MGJ position is stable."},
+  {id:21,sheet:14,q:"Keratohyaline granules are found in:",opts:["St. granulosum","St. spinosum","St. basale","Prickle cell layer"],ans:0,ref:"Sheet 14 · Granular cell layer contains keratohyalin granules.",gulf:"Keratohyalin granules = basophilic, in stratum granulosum. They accumulate tonofilaments."},
+  {id:22,sheet:14,q:"In the tongue bitter taste is more perceived at:",opts:["Tip","Sides","Back","Front"],ans:2,ref:"Sheet 14 · Bitter sensations seen in the posterior centre of the tongue and soft palate.",gulf:"Taste map: Sweet = tip; Salt = front sides; Sour = posterior sides; Bitter = back/posterior centre + soft palate."},
+  {id:23,sheet:14,q:"The major cells seen in gingiva are:",opts:["Fibroblast","Odontoblasts","Cementoblasts","Merkel cells"],ans:0,ref:"Sheet 14 · Fibroblasts are the predominant connective tissue cells of the lamina propria of gingiva.",gulf:"Fibroblasts = major cells of gingival CT. Produce collagen (mainly Type I) and ground substance."},
+  {id:24,sheet:14,q:"Cells of the spinous layer are generally:",opts:["Larger than the basal cells","Smaller than the basal cells","Same size as that of basal cells","None of the above"],ans:0,ref:"Sheet 14 · Intermediate layer: large polyhedral-shape cells larger than the basal cells.",gulf:"Spinous/prickle cells are larger & polyhedral. Basal cells are small cuboidal. Spinous cells cannot divide."},
+  {id:25,sheet:14,q:"Which has immune function in the oral mucous membrane?",opts:["Melanocyte","Merkel cells","Langerhans cell","Keratinocyte"],ans:2,ref:"Sheet 14 · Langerhans cells play role in antigen reaction as immune response with T-lymphocytes.",gulf:"Langerhans cells = immune function (antigen presentation to T-lymphocytes). Merkel = touch. Melanocytes = pigment."},
+  {id:26,sheet:14,q:"The range of level of fluoride secreted by the glands into the mouth is:",opts:["0.004–0.005 ppm","0.006–0.007 ppm","0.007–0.005 ppm","0.007–0.08 ppm"],ans:0,ref:"Sheet 15 · Salivary fluoride is typically 0.004–0.005 ppm in non-fluoridated areas.",gulf:"Salivary F⁻ = 0.004–0.005 ppm (background). Saliva supplies minerals (Ca, F, PO₄) to enamel."},
+  {id:27,sheet:14,q:"Protein making up the bulk of keratohyalin granules in stratum granulosum:",opts:["Involucrin","Vinculin","Filaggrin","Nectin"],ans:2,ref:"Sheet 14 · Keratohyalin granules mainly contain filaggrin (filament-aggregating protein).",gulf:"Filaggrin = bulk of keratohyalin. Involucrin = forms cornified cell envelope. Both in stratum granulosum."},
+  {id:28,sheet:14,q:"Which papillae are completely keratinized:",opts:["Fungiform","Filiform","Circumvallate","Foliate"],ans:1,ref:"Sheet 14 · Filiform are the most common type and fully keratinized papillae without taste buds.",gulf:"Filiform = most common + fully keratinized + NO taste buds. Fungiform = partially keratinized + taste buds (red)."},
+  {id:29,sheet:14,q:"Stratum Germinativum of the oral epithelium is the term given to:",opts:["Basal cell layer","Granular cell layer","Spinous cells and granular cells","Basal cells and parabasal spinous cells"],ans:3,ref:"Sheet 14 · Stratum germinativum = basal cell layer + immediately adjacent parabasal spinous cells.",gulf:"Stratum germinativum = basal + immediately suprabasal (parabasal spinous) cells. These are the proliferative compartment."},
+  {id:30,sheet:14,q:"The oral epithelium is attached to the enamel via:",opts:["Reticular fibers","Collagen fibers","Hemidesmosomes","Desmosomes"],ans:2,ref:"Sheet 14 · JE attaches to enamel via internal basal lamina + hemidesmosomes.",gulf:"Hemidesmosomes + internal basal lamina attach JE to enamel. Desmosomes connect epithelial cells to each other."},
+  {id:31,sheet:14,q:"Buccal mucosa is:",opts:["Keratinized","Non-keratinized","Para-keratinized","Ortho-keratinized"],ans:1,ref:"Sheet 14 · Buccal mucosa = lining mucosa = non-keratinized stratified squamous epithelium.",gulf:"Buccal = non-keratinized (lining mucosa). Gingiva + hard palate = masticatory mucosa = keratinized/parakeratinized."},
+  {id:32,sheet:14,q:"Masticatory mucosa is:",opts:["Para keratinized","Ortho keratinized","Non keratinized","Sub keratinized"],ans:0,ref:"Sheet 14 · Parakeratinized epithelium represents 75% in the attached gingiva (masticatory mucosa).",gulf:"Attached gingiva = 75% parakeratinized, 15% orthokeratinized. Hard palate can be orthokeratinized."},
+  {id:33,sheet:14,q:"The anatomic crown is shorter than the clinical crown in which instance:",opts:["Impaction","Gingivitis","Occlusal wear","Gingival recession"],ans:3,ref:"Sheet 14 · Gingival recession → root exposure → clinical crown > anatomic crown.",gulf:"Gingival recession → root exposed → clinical crown > anatomic crown. Impaction → clinical < anatomic."},
+  {id:34,sheet:14,q:"Epithelial attachment:",opts:["Attachment of ameloblasts to the tooth","Microscopically it resembles basal lamina","Derived from secondary attachment epithelium","All of the above"],ans:1,ref:"Sheet 14 · JE under EM has internal basal lamina that microscopically resembles the regular basal lamina.",gulf:"JE has internal basal lamina (adjacent to enamel) microscopically resembling BL. Attachment is via hemidesmosomes."},
+  {id:35,sheet:14,q:"The mucous membrane of cheeks and lips:",opts:["It attached to buccinator muscle in cheeks","It attached to orbicularis oris in lips","A & B are correct","None of the above"],ans:2,ref:"Sheet 14 · Buccal mucosa attached to buccinator; labial mucosa attached to orbicularis oris.",gulf:"Cheek mucosa → attached to buccinator. Lip mucosa → attached to orbicularis oris. Both are lining (non-keratinized) mucosa."},
+  {id:36,sheet:14,q:"The function of Merkel cells is:",opts:["Sensory function","Secretory function","Neuro sensory","Nutritive function"],ans:0,ref:"Sheet 14 · Merkel's cells are connected to axon neuron to play role in the pressure or touch sensation.",gulf:"Merkel cells = mechanoreceptors (touch & pressure). Silver stain. Neural crest origin. In basal layer."},
+  {id:37,sheet:14,q:"Jacobson's organ is:",opts:["Auxiliary olfactory sense organ","Ellipsoid/Cigar shaped","Undergoes degeneration after 4 months of intrauterine life","All of the above"],ans:3,ref:"Jacobson's organ (vomeronasal organ) is an auxiliary olfactory organ, cigar-shaped, degenerates at ~4 months IU.",gulf:"Vomeronasal organ = auxiliary olfactory, cigar-shaped, degenerates at 4 months IU in humans."},
+  {id:38,sheet:14,q:"Stratum germinativum is:",opts:["Stratum basale","Stratum granulosum","Stratum basale and parabasal spinous cells","Stratum spinosum"],ans:2,ref:"Sheet 14 · Germinative/proliferative layer = basal + immediately suprabasal spinous cells.",gulf:"Stratum germinativum = basal + parabasal spinous = the division zone."},
+  {id:39,sheet:14,q:"Supporting cells of taste buds are called as:",opts:["Sustentacular cells","Taste cells","Von Ebner's cells","Acini"],ans:0,ref:"Sheet 14 · Supporting cells are located at the outer portion of taste buds — also called sustentacular cells.",gulf:"Taste bud: supporting (sustentacular) cells at periphery + taste (receptor) cells at centre with taste pore. Renewal: 10 days."},
+  {id:40,sheet:14,q:"Bulk of lamina propria of the gingiva is made of collagen type:",opts:["I","II","III","IV"],ans:0,ref:"Sheet 14 · Type I collagen is the primary structural collagen of gingival lamina propria.",gulf:"Type I collagen = bulk of gingival CT. Type III = minor component. Type IV = basement membrane. Type II = cartilage."},
+  {id:41,sheet:14,q:"Minor salivary glands are absent from the:",opts:["Gingiva and anterior part of hard palate","Tongue and soft palate","Retromolar area and hard palate","Lip and posterior third of the hard palate"],ans:0,ref:"Sheet 15 · Absent from gingiva (no submucosa) and anterior hard palate (fatty zone).",gulf:"Gingiva has no submucosa → no minor glands. Anterior hard palate = fatty zone (no glands). Posterior hard palate = glandular zone."},
+  {id:42,sheet:14,q:"Difference between the skin and mucosa of cheek is:",opts:["Thin lamina and non keratinized mucosa of cheek","Keratinized mucosa of cheek","Rete pegs","Thick lamina propria on skin of cheek"],ans:0,ref:"Sheet 14 · Buccal mucosa = non-keratinized. Facial skin = keratinized with adnexal structures.",gulf:"Key difference: cheek mucosa = non-keratinized, moist. Cheek skin = keratinized, dry, with adnexal structures."},
+  {id:43,sheet:14,q:"The thinnest epithelium of oral cavity is found in the:",opts:["Buccal gingiva","Lingual gingiva","Oral surface of lip","Sublingual mucosa (floor of mouth)"],ans:3,ref:"Sheet 14 · Floor of mouth: very thin non-keratinized epithelium — thinnest in oral cavity.",gulf:"Floor of mouth + ventral tongue = thinnest non-keratinized epithelium → high permeability (sublingual drug delivery)."},
+  {id:44,sheet:14,q:"The red zones of lips have:",opts:["30% Sebaceous glands","75% sebaceous glands","Very small number of sebaceous glands, if any","Absolutely no sebaceous glands"],ans:2,ref:"Sheet 14 · Vermilion border has few or no sebaceous glands → prone to dryness.",gulf:"Vermilion = very few/no sebaceous glands → dries easily. Blood vessels close to surface → red color."},
+  {id:45,sheet:14,q:"Masticatory mucosa in the oral cavity covers the:",opts:["Floor of the mouth and soft palate","Alveolar mucosa and vestibular fornix","Lip and cheek","Gingiva and hard palate"],ans:3,ref:"Sheet 14 · Masticatory mucosa: hard palate, dorsal surface of tongue, free and attached gingiva.",gulf:"Masticatory mucosa = Gingiva + Hard palate (+ dorsal tongue). All others = lining mucosa."},
+  {id:46,sheet:14,q:"Merkel cells are found in which of the following tissue:",opts:["Epidermis","Papillary layer of dermis"],ans:0,ref:"Sheet 14 · Merkel's cells are located at the basal cell layer of the epithelium (epidermis/oral epithelium).",gulf:"Merkel cells = basal cell layer of epidermis (or oral epithelium). Form Merkel disc (type I mechanoreceptor)."},
+  {id:47,sheet:14,q:"Non keratinized epithelium is found over:",opts:["Attached gingiva","Free gingiva","Interdental papilla","Gingival sulcus"],ans:3,ref:"Sheet 14 · Non-keratinized epithelium 10%: sulcus epithelium, interdental col, and junctional epithelium.",gulf:"Non-keratinized (10%): sulcus, col, JE. Keratinized (15%): free & attached gingiva. Parakeratinized (75%): attached gingiva."},
+  {id:48,sheet:14,q:"Stratum granulosum is not present in:",opts:["Hyper orthokeratosis","Hyper parakeratosis","Non keratinized epithelium","Sulcular epithelium"],ans:1,ref:"Sheet 14 · Parakeratinized epithelium: the granular layer may be absent.",gulf:"Parakeratosis → granular layer absent. Orthokeratosis → stratum granulosum always present. Non-keratinized also lacks it."},
+  {id:49,sheet:14,q:"Biomechanism that unites the epithelium to the tooth surface is:",opts:["Internal basal lamina","Junctional epithelium","Reduced enamel epithelium","Epithelial attachment"],ans:3,ref:"Sheet 14 · Attachment epithelium (organic material) is the mechanism of attachment of DGJ with the tooth surface.",gulf:"Epithelial attachment = organic material synthesized by superficial JE cells + hemidesmosomes + internal BL."},
+  {id:50,sheet:14,q:"Epithelial cells which ultimately keratinize are known as:",opts:["Keratinizing cells","Melanocytes","Non-Keratinizing cells","Clear cells"],ans:0,ref:"Sheet 14 · Keratinocytes: all cells of epithelial tissue that produce keratin.",gulf:"Keratinocytes = cells that produce keratin = main epithelial cells. Non-keratinocytes (Langerhans, Merkel, melanocytes) do NOT produce keratin."},
+  {id:51,sheet:14,q:"Lamina densa of the gingival basement membrane is rich in:",opts:["Type I and III collagen","Type III collagen","Type IV collagen","Type I collagen"],ans:2,ref:"Sheet 14 · Lamina densa is composed of Type IV collagen + laminin.",gulf:"Lamina densa = Type IV collagen + laminin + fibronectin. Type IV collagen is unique to basement membranes (non-fibrillar)."},
+  {id:52,sheet:14,q:"In which papillae of the tongue are taste buds predominantly located:",opts:["Circumvallate","Filiform","Foliate","Fungiform"],ans:0,ref:"Sheet 14 · Circumvallate contain the greatest concentration of taste buds (~100 per papilla).",gulf:"Circumvallate = most taste buds per papilla (up to 100). Foliate = also many. Fungiform = fewer. Filiform = NO taste buds."},
+
+  // ── Sheet 15: Salivary Glands (Q53–Q83) ──
+  {id:53,sheet:15,q:"The normal pH of saliva is about:",opts:["5.5","9.5","7.5","8.5"],ans:2,ref:"Sheet 15 · Buffer function to balance the pH (6.2 to 7.4); stimulated saliva ~7.4.",gulf:"Saliva pH = 6.2–7.4 (average ~6.7–7.0). Buffered by bicarbonate + phosphate. Rises with flow rate."},
+  {id:54,sheet:15,q:"Of the total saliva, about 60% is secreted by:",opts:["Parotid glands","Sublingual glands","Submandibular glands","None of the above"],ans:2,ref:"Sheet 15 · Submandibular gland provides 60% of total saliva volume.",gulf:"Volume: Submandibular 60% > Parotid 25% > Sublingual 10% > Minor 5%. Submandibular = largest VOLUME; Parotid = largest SIZE."},
+  {id:55,sheet:15,q:"The basket cells are also known as:",opts:["Myoepithelial cells","Endothelial cells","Parenchymal cells","None of the above"],ans:0,ref:"Sheet 15 · Myoepithelial cells have 4 to 8 long cytoplasmic processes radiating outward — basket-like.",gulf:"Myoepithelial = basket cells. Contract → squeeze acini → force saliva into intercalated duct."},
+  {id:56,sheet:15,q:"The three bilaterally paired major salivary glands are located:",opts:["Extraorally","Intraorally","In tongue","In neck"],ans:0,ref:"Sheet 15 · The parotid gland is the defining fully extraoral major salivary gland.",gulf:"Parotid = only fully extraoral (behind ramus). Submandibular = at floor of mouth. Sublingual = in floor of mouth."},
+  {id:57,sheet:15,q:"The parotid glands open through the:",opts:["Stensen's duct","Wharton's duct","Bartholin's duct","Blandin's duct"],ans:0,ref:"Sheet 15 · Long excretory parotid duct (Stenson's duct) opens opposite maxillary second molar.",gulf:"Parotid → Stensen's duct → opposite maxillary 2nd molar. Submandibular → Wharton's. Sublingual → Bartholin's."},
+  {id:58,sheet:15,q:"The saliva is neutralised due to:",opts:["Mucin","Ammonia","Amino acids","Bicarbonates"],ans:3,ref:"Sheet 15 · Buffer function: neutralize acid via phosphate & bicarbonate.",gulf:"Saliva buffer: bicarbonate (primary) + phosphate. Neutralizes bacterial acids → protects enamel."},
+  {id:59,sheet:15,q:"Salivary gland secretion is unique in that, its secretions are controlled by:",opts:["Hormones","Nerves","Chemicals","All of the above"],ans:1,ref:"Sheet 15 · Salivary glands are controlled by secretomotor nerves — both sympathetic and parasympathetic.",gulf:"Unique: salivary secretion is primarily neurally controlled (not hormonal). Both parasympathetic (watery) + sympathetic (protein-rich)."},
+  {id:60,sheet:15,q:"The content of saliva includes all except:",opts:["Amylase","Urea","Lysoenzyme (Lysozyme)","Lipase"],ans:3,ref:"Sheet 15 · Lipase is primarily pancreatic; not a primary salivary enzyme.",gulf:"Amylase = major salivary enzyme. Lysozyme = antibacterial. Urea present. Lipase = primarily pancreatic."},
+  {id:61,sheet:15,q:"The ducts of glands opening into the floor of the mouth are:",opts:["Submandibular and sublingual","Submandibular and parotid","Sublingual and parotid","Von Ebner"],ans:0,ref:"Sheet 15 · Wharton's duct (submandibular) + Bartholin's duct (sublingual) both open at the floor of the mouth.",gulf:"Floor of mouth openings: Wharton's (submandibular) + Bartholin's (sublingual) → sublingual papilla. Stensen's (parotid) → buccal mucosa."},
+  {id:62,sheet:15,q:"Sublingual gland is a:",opts:["Mixed gland","Serous gland","Mucous gland","Present in root of tongue"],ans:0,ref:"Sheet 15 · Sublingual salivary gland: its secretion is mixed (mainly mucous).",gulf:"Sublingual = mixed (mainly mucous). No capsule. Smallest major gland. Bartholin's duct. 10% saliva."},
+  {id:63,sheet:15,q:"Bartholin's duct is the name of:",opts:["Parotid duct","Submandibular duct","Sublingual duct","Lacrimal duct"],ans:2,ref:"Sheet 15 · Sublingual salivary gland is associated with the short excretory duct (Bartholin's duct).",gulf:"Duct mnemonics: Stensen (Parotid), Wharton (Submandibular), Bartholin (Sublingual)."},
+  {id:64,sheet:15,q:"The glands of Blandin and Nuhn are:",opts:["The posterior lingual glands","The anterior lingual glands located near the apex of the tongue","The glossopalatine glands","The palatine glands"],ans:1,ref:"Sheet 15 · Blandin and Nuhn glands seen at the tip of the tongue — mixed secretion.",gulf:"Blandin & Nuhn = mixed minor glands at tongue TIP. Weber glands = posterior tongue (pure mucous). Von Ebner = circumvallate (serous)."},
+  {id:65,sheet:15,q:"A purine which is found in saliva is:",opts:["Uric acid","Thymine","Adenosine","Hypolithinium"],ans:0,ref:"Sheet 15 · Uric acid is a purine metabolite present in saliva.",gulf:"Uric acid = purine metabolite in saliva. Thymine = pyrimidine (DNA). Saliva contains urea, ammonia, uric acid."},
+  {id:66,sheet:15,q:"Which of the following is not found in saliva?",opts:["Lysozyme","Phosphate","Bicarbonate","Trypsin"],ans:3,ref:"Sheet 15 · Trypsin is a pancreatic protease enzyme — NOT found in saliva.",gulf:"Trypsin = pancreatic enzyme (not salivary). All others (lysozyme, phosphate, bicarbonate) are normal salivary components."},
+  {id:67,sheet:15,q:"Mucin in mucous cells is usually demonstrated by:",opts:["PAP stain","H and E stain","Mucicarmine stain","Mallory stain"],ans:2,ref:"Sheet 15 · Mucicarmine is the specific histochemical stain that colours mucin bright red/pink.",gulf:"Mucicarmine = specific for mucin (bright red). PAS also stains mucin. Mucous cells appear light on H&E."},
+  {id:68,sheet:15,q:"The functions of myoepithelial cells may be:",opts:["Initiating contraction","Support for the end piece during active secretion","Provide signals to the acinar secretory cells for structural reorganization","All of the above"],ans:3,ref:"Sheet 15 · Myoepithelial cells squeeze the acini, provide mechanical support, and may have signaling roles.",gulf:"Myoepithelial functions: Contract → squeeze acini → propel saliva. Mechanical support. May signal acinar reorganization."},
+  {id:69,sheet:15,q:"Myoepithelial cells are present on which of the following?",opts:["Acini only","Acini and intercalated duct","Striated duct","Excretory duct"],ans:1,ref:"Sheet 15 · Myoepithelial cells present on acini and intercalated ducts.",gulf:"Myoepithelial cells = on acini + intercalated ducts. Absent from striated and excretory ducts."},
+  {id:70,sheet:15,q:"Carmalt's glands are:",opts:["Major salivary glands","Minor salivary glands (Retromolar)","Minor salivary glands (lingual)","Taste buds"],ans:1,ref:"Carmalt's glands are minor salivary glands located in the retromolar region.",gulf:"Carmalt's glands = retromolar minor salivary glands. Minor glands absent from gingiva and anterior hard palate."},
+  {id:71,sheet:15,q:"On passing from acini to ductal orifices, saliva becomes _____ as compared to plasma:",opts:["Hypertonic sometimes","Hypotonic","Isotonic","Hypertonic always"],ans:1,ref:"Sheet 15 · Striated duct cells reabsorb Na⁺ and Cl⁻ without returning water → saliva becomes HYPOTONIC.",gulf:"Acini → isotonic primary saliva → striated duct reabsorbs Na⁺/Cl⁻ → hypotonic final saliva."},
+  {id:72,sheet:15,q:"Tuft cells are receptors seen on:",opts:["Cell rich zone","Lining of maxillary sinus","Salivary duct","TMJ capsule"],ans:2,ref:"Tuft cells (chemosensory brush cells) have been identified in salivary duct epithelium.",gulf:"Tuft cells = brush cells (chemosensory). Found in salivary gland ducts."},
+  {id:73,sheet:15,q:"The parotid gland opens:",opts:["On the floor of the mouth","At the side of the lingual frenum","At the caruncula","On the buccal mucosa opposite the maxillary second molar"],ans:3,ref:"Sheet 15 · Stenson's duct opens on the inner surface of the buccal mucosa opposite to maxillary second molar.",gulf:"Parotid (Stensen's) → opposite upper 2nd molar. Submandibular (Wharton's) + Sublingual (Bartholin's) → sublingual papilla."},
+  {id:74,sheet:15,q:"Which of the following is purely serous in nature?",opts:["Parotid and Von Ebner's glands","Palatine glands only","Glossopalatine glands","Lingual glands"],ans:0,ref:"Sheet 15 · Purely serous: parotid (adult) + von Ebner.",gulf:"Purely serous: Parotid (adult) + Von Ebner's. Purely mucous: Palatine, glossopalatine, Weber. Mixed: submandibular, sublingual."},
+  {id:75,sheet:15,q:"The total volume of saliva secreted daily is:",opts:["750 ml","1.5 liters","2 liters","3 liters"],ans:1,ref:"Sheet 15 · Total daily salivary output ≈ 1–1.5 liters.",gulf:"Total daily saliva = ~1–1.5 L. Unstimulated flow = ~0.3 mL/min. Stimulated = up to 1 mL/min."},
+  {id:76,sheet:15,q:"Largest amount of saliva is produced by:",opts:["Submandibular glands","Sublingual Glands","Parotid glands","Von Ebner Glands"],ans:0,ref:"Sheet 15 · Submandibular produces 60% of total saliva volume. Parotid = largest SIZE but 25% volume.",gulf:"Largest VOLUME → Submandibular (60%). Largest GLAND by size → Parotid. Size ≠ output volume."},
+  {id:77,sheet:15,q:"The immunoglobulin present in saliva is:",opts:["IgG","IgA","IgM","IgE"],ans:1,ref:"Sheet 15 · Immunoglobulins in saliva: mainly IgA and small amounts of IgM and IgG.",gulf:"Saliva: mainly sIgA (secretory IgA) = main antibody. sIgA prevents bacterial adhesion to oral surfaces."},
+  {id:78,sheet:15,q:"Salivary glands are not found in:",opts:["Anterior part of the hard palate","Posterior part of the hard palate","In mandible posterior to the 3rd molar","Nasopalatine canal"],ans:0,ref:"Sheet 14 · Hard palate: anterior part contains adipose tissue (fatty zone = no glands); posterior = glandular zone.",gulf:"Anterior hard palate = fatty zone (no glands). Posterior = glandular zone. Gingiva also has no minor glands."},
+  {id:79,sheet:15,q:"Which of the following is purely mucous?",opts:["Palatine glands","Glossopalatine glands","Posterior lingual mucous glands","All of the above"],ans:3,ref:"Sheet 15 · Pure mucous: glossopalatine, palatine, and Weber glands (posterior lingual).",gulf:"Purely mucous minor glands: Palatine, Glossopalatine, Weber (posterior tongue), Posterior lingual."},
+  {id:80,sheet:15,q:"The minor salivary glands begin their development in fetal life during:",opts:["1st month","2nd month","3rd month","4th month"],ans:2,ref:"Sheet 15 · Minor glands start developing in the 3rd month of fetal life.",gulf:"Minor salivary gland development: 3rd month IU. Von Ebner's = 4 months IU."},
+  {id:81,sheet:15,q:"Salivary flow is reduced in:",opts:["Sjogren's syndrome","Xerostomia","Inflammation of glands","All of the above"],ans:3,ref:"Sheet 15 · Sjogren's = autoimmune destruction. Xerostomia = any dry mouth. Inflammation reduces secretion.",gulf:"Hyposalivation causes: Sjogren's (autoimmune), medications, radiation, gland inflammation, aging, dehydration."},
+  {id:82,sheet:15,q:"The severance of duct of minor salivary glands and pooling of saliva in the tissues is called as:",opts:["Ranula","Congenital Epulis","Mucocele","Sialadenitis"],ans:2,ref:"Sheet 15 · Mucocele = mucous extravasation cyst caused by severance/rupture of a minor salivary gland duct.",gulf:"Mucocele = minor gland duct rupture → mucus extravasation → soft bluish swelling (usually lower lip). Ranula = floor of mouth (sublingual gland)."},
+  {id:83,sheet:15,q:"The pH of whole saliva is:",opts:["1.2–2.4","3.0–5.6","6.7–7.4","7.0–8.2"],ans:2,ref:"Sheet 15 · Buffer function to balance the pH (6.2 to 7.4); whole saliva pH range 6.7–7.4.",gulf:"Whole saliva pH = 6.7–7.4. Below pH 5.5 → enamel dissolution begins (critical pH)."},
+
+  // ── Sheet 9: PDL (Q84–Q126) ──
+  {id:84,sheet:9,q:"Predominant connective tissue cells of the periodontal ligament:",opts:["Cementoblasts","Fibroblasts","Osteoblasts","Cell rests of Malassez"],ans:1,ref:"Sheet 9 · The principle cells of the PDL are fibroblasts — they both synthesize and degrade collagen.",gulf:"PDL cells: fibroblasts (principal) → synthetic + resorptive. Also: cementoblasts, osteoblasts, UMCs, defense cells, rests of Malassez."},
+  {id:85,sheet:9,q:"The periodontal ligament:",opts:["Derives blood primarily from pulp branches","Has a slow rate of turnover","Contains epithelial cells","Comprises primarily Type II collagen"],ans:2,ref:"Sheet 9 · Epithelial cell rests of Malassez occur close to the cementum as cluster or strands of cells.",gulf:"PDL epithelial cells = rests of Malassez (remnants of HERS). Unique epithelial cells in CT of PDL."},
+  {id:86,sheet:9,q:"Which is NOT a principal fiber group of the PDL:",opts:["Horizontal","Oblique","Alveolar crest","Trans septal"],ans:3,ref:"Sheet 9 · Principal fiber bundles: alveolar crest, horizontal, oblique, apical, interradicular. Transseptal = gingival ligament fiber.",gulf:"5 principal PDL fibers: Alveolar crest, Horizontal, Oblique (most numerous), Apical, Interradicular. Transseptal = gingival ligament."},
+  {id:87,sheet:9,q:"Anchoring fibrils are composed of:",opts:["Type V and VII collagen","Type I and III collagen","Type IV collagen","Type IV and III collagen"],ans:0,ref:"Sheet 9 · Anchoring fibrils at the basement membrane zone are composed of type VII collagen.",gulf:"Anchoring fibrils = Type VII collagen (basement membrane anchors). PDL collagen = Type I, III, XII. Type IV = BM lamina densa."},
+  {id:88,sheet:9,q:"Collagen molecule exhibits all EXCEPT:",opts:["Triple plated sheath","Mostly contains glycine residues","Exhibit cross striations at 64 nm","Intracellular in nature"],ans:0,ref:"Sheet 9 · Collagen = triple helix structure (NOT triple plated sheath), rich in glycine, 64 nm periodicity.",gulf:"Collagen = triple helix (NOT plated sheath). ~33% glycine. Cross-striations 64–67 nm. Extracellular matrix protein."},
+  {id:89,sheet:9,q:"Remnants of Hertwig's root sheath are found in:",opts:["Gingiva","Alveolar bone","Cementum","Periodontal Ligament"],ans:3,ref:"Sheet 9 · Epithelial cell rests of Malassez are remnants of HERS found within the PDL space.",gulf:"HERS remnants → Rests of Malassez in PDL (close to cementum). They may proliferate → lateral/apical periodontal cysts."},
+  {id:90,sheet:9,q:"Age changes in the periodontal ligament include:",opts:["Increased fibroplasia","Increased vascularity","Increased thickness","Decrease in the number of cementicles"],ans:0,ref:"Sheet 9 · PDL age changes include increased fibrosis/fibroplasia, decreased vascularity, thinning.",gulf:"PDL age changes: ↑ fibroplasia/fibrosis, ↓ vascularity, ↓ thickness, cementicles form, detachment of cervical fibers."},
+  {id:91,sheet:9,q:"All cells of PDL are of mesenchymal origin EXCEPT:",opts:["Fibroblasts","Multi totipotent cells","Cementoblasts","Cell rests of Malassez"],ans:3,ref:"Sheet 9 · Rests of Malassez = remnants of HERS = EPITHELIAL origin (ectoderm-derived).",gulf:"Exception: Rests of Malassez = EPITHELIAL origin (from HERS/ectoderm). All others = mesenchymal."},
+  {id:92,sheet:9,q:"The attachment apparatus of tooth is composed of:",opts:["Gingiva, cementum and alveolar bone","Gingiva and cementum","Cementum and periodontal ligament","Periodontal ligament, cementum and alveolar bone"],ans:3,ref:"Sheet 9 · PDL attaches tooth to alveolar bone; Sharpey's fibers embed in cementum and alveolar bone.",gulf:"Attachment apparatus = PDL + cementum + alveolar bone. Periodontium (broader) = + gingiva."},
+  {id:93,sheet:9,q:"The vascular supply of the periodontal ligament is:",opts:["Greatest in the middle third of a single rooted tooth","Greatest in the middle third of a multirooted tooth","A net-like plexus closer to the cementum","A net-like plexus closer to the bone"],ans:0,ref:"Sheet 9 · PDL blood supply forms a rich plexus greatest in the middle third of the root.",gulf:"PDL vascular supply: 3 sources (apical, alveolar, gingival). Blood supply greatest in middle third."},
+  {id:94,sheet:9,q:"Fibers of the periodontal ligament embedded in the bone are:",opts:["Sharpey's fibers","Tome's fibers","Elastic fibers","Ray's fibers"],ans:0,ref:"Sheet 9 · All principal collagen fiber bundles of the PDL are embedded in cementum or bone — the embedded portion is Sharpey's fiber.",gulf:"Sharpey's fibers = embedded portions of PDL principal fibers in cementum AND alveolar bone."},
+  {id:95,sheet:9,q:"Group of fibers which resist the masticatory forces are:",opts:["Dentogingival","Transseptal","Oblique","Horizontal"],ans:2,ref:"Sheet 9 · The oblique group (most numerous) runs obliquely and resists vertical and intrusive forces.",gulf:"Oblique fibers = most numerous + resist masticatory (vertical/intrusive) forces. Most important functional group."},
+  {id:96,sheet:9,q:"Width of PDL is:",opts:["0.10 mm","0.50 mm","0.25 mm","0.75 mm"],ans:2,ref:"Sheet 9 · PDL thickness ≈ 0.25 mm average (range 0.1–0.38 mm).",gulf:"PDL width = ~0.25 mm average. Widest at cervical + apical thirds. Narrowest at fulcrum of rotation (middle third)."},
+  {id:97,sheet:9,q:"Intermediate Plexus is seen in the:",opts:["Cementum","PDL","Pulp","Dentin"],ans:1,ref:"Sheet 9 · The intermediate plexus is a concept applied to principal PDL fiber continuity/remodeling zone.",gulf:"Intermediate plexus = zone in mid-PDL where principal fiber bundles from cementum and bone meet. Absent in transseptal."},
+  {id:98,sheet:9,q:"In mammals independent and tough suspension for teeth is provided by:",opts:["Alveolar sockets","Cementum","Gubernacular cords","Periodontal membrane"],ans:3,ref:"Sheet 9 · Supportive: the PDL is possibly the most important function — provides gomphosis-type tooth suspension.",gulf:"PDL = specialized soft CT suspending tooth in bony socket (gomphosis joint). Unique to mammals."},
+  {id:99,sheet:9,q:"Bone adjacent to PDL containing a great number of Sharpey's fibers is known as:",opts:["Lamina dura","Bundle bone","Lamina propria","Lamina densa"],ans:1,ref:"Sheet 10 · Bundle bone adjacent to the PDL where principal fibers are attached — rich in Sharpey's fibers.",gulf:"Bundle bone = alveolar bone proper layer adjacent to PDL, with Sharpey's fibers embedded. Lamina dura = radiographic term."},
+  {id:100,sheet:9,q:"The most abundant principal fiber group in periodontal ligament is:",opts:["Horizontal","Transseptal","Apical","Oblique"],ans:3,ref:"Sheet 9 · The oblique group is the most numerous in the periodontal ligament.",gulf:"Oblique fibers = most numerous (most of root length covered). Primary load-bearing fiber group."},
+  {id:101,sheet:9,q:"Collagen biosynthesis occurs inside the:",opts:["Chondroblasts","Odontoblasts","Osteoblasts","Fibroblasts"],ans:3,ref:"Sheet 9 · PDL fibroblasts have abundant rough endoplasmic reticulum, Golgi apparatus for collagen synthesis.",gulf:"Fibroblasts = primary collagen producers. Also: osteoblasts (bone), odontoblasts (dentin), cementoblasts (cementum)."},
+  {id:102,sheet:9,q:"Which groups of fibers are NOT attached to alveolar bone?",opts:["Apical","Horizontal","Oblique","Transseptal"],ans:3,ref:"Sheet 9 · Transseptal fibers run from cementum of one tooth to cementum of adjacent tooth — NOT to bone.",gulf:"Transseptal: cementum → (over alveolar crest) → cementum of adjacent tooth. NOT attached to bone."},
+  {id:103,sheet:9,q:"Principal fibers of PDL are attached to:",opts:["Alveolar bone proper","Bundle bone","Lamellar bone","Cortical bone"],ans:0,ref:"Sheet 10 · Bundle bone adjacent to the PDL where the principal fibers are attached = alveolar bone proper.",gulf:"Note: Alveolar bone proper = Bundle bone = Cribriform plate = Lamina dura (radiograph)."},
+  {id:104,sheet:9,q:"Periodontal ligament has predominantly:",opts:["Type II collagen fibers","Oxytalan fibers","Elastic fibers","Type I collagen fibers"],ans:3,ref:"Sheet 9 · PDL collagen types I, III, XII — Type I is the most abundant.",gulf:"PDL collagen: predominantly Type I (principal fibers). Also Type III (minor). Oxytalan = pre-elastic (not true elastic)."},
+  {id:105,sheet:9,q:"The calcified masses found in PDL are:",opts:["Cementicles","Osteoblasts","Cementoclasts","Osteoclasts"],ans:0,ref:"Sheet 9 · Calcified bodies sometimes found in the PDL are called cementicles.",gulf:"Cementicles = calcified nodules in PDL. Types: free, adherent, embedded (exocementoses). Increase with age."},
+  {id:106,sheet:9,q:"Sharpey's fibers are derived from:",opts:["Hertwig's root sheath","Epithelial rest cells of Malassez","Alveolar bone","Dental follicle"],ans:3,ref:"Sheet 9 · PDL forms from cells of the dental follicle which differentiate into fibroblasts and synthesize the fibers.",gulf:"Dental follicle → fibroblasts → PDL collagen fibers → embedded ends = Sharpey's fibers. Follicle also gives cementoblasts and osteoblasts."},
+  {id:107,sheet:9,q:"Intermediate plexus is absent in which principal fibers:",opts:["Gingival","Oblique","Horizontal","Transseptal"],ans:3,ref:"Sheet 9 · Transseptal fibers have NO intermediate plexus — continuous fibers spanning between adjacent teeth.",gulf:"Transseptal fibers have NO intermediate plexus. All other principal fibers have a mid-fiber reorganization zone."},
+  {id:108,sheet:9,q:"Periodontal fibers joining cemental surface of one tooth to cemental surface of adjacent tooth:",opts:["Gingivodental","Cemental fibers","Horizontal fibers","Transseptal fibers"],ans:3,ref:"Sheet 9 · Transseptal fiber system: runs interdentally from the cementum of one tooth to cementum of adjacent tooth.",gulf:"Transseptal = ONLY fiber running cementum-to-cementum. They form the interdental ligament."},
+  {id:109,sheet:9,q:"Sharpey's fibers are present in:",opts:["Bone","Periosteum","Periodontal ligament","All of the above"],ans:3,ref:"Sheet 9 · Sharpey's fibers = collagen fibers embedded in bone or cementum. Also present in periosteum.",gulf:"Sharpey's fibers = embedded fiber ends wherever fibrous CT inserts into bone: PDL, periosteum, tendons, ligaments."},
+  {id:110,sheet:9,q:"Interdependency of osteoblasts and osteoclasts in bone remodelling is called as:",opts:["Lacunae","Coupling","Reversal lines","Canaliculi"],ans:1,ref:"Sheet 10 · Bone remodeling: osteoclastic resorption is coupled to osteoblastic apposition — 'coupling'.",gulf:"Coupling = bone remodeling cycle: osteoclast resorbs → growth factors → attract osteoblasts → form new bone."},
+  {id:111,sheet:9,q:"True about osteoclasts:",opts:["Monocytes are precursor cells of osteoclasts","Ruffled border adjacent to resorbing bone","Contain lysosomes with acid phosphates","All of the above are true"],ans:3,ref:"Sheet 9 · Osteoclasts: monocyte/macrophage lineage; ruffled border; large lysosomes with acid phosphatase.",gulf:"Osteoclasts: monocyte precursors, multinucleated, ruffled border (↑ surface area), secrete H⁺ + collagenase. Create Howship's lacunae."},
+  {id:112,sheet:9,q:"Periodontal ligament is made up of:",opts:["Type I collagen","Type I and Type III collagen","Type I and Type II collagen","Type I and Type IV collagen"],ans:1,ref:"Sheet 9 · PDL collagens are types I, III, XII — Type I (major) and Type III (minor/reticular).",gulf:"PDL collagen: Type I (bulk = principal fibers) + Type III (reticular = around vessels). Type XII is a FACIT collagen."},
+  {id:113,sheet:9,q:"Which of the following is correct about PDL: Fibronectin helps fibroblast attachment / Cementicles in older individuals / Large myelinated fibers for touch / Small fibers for pain:",opts:["Fibronectin helps fibroblast attachment only","Cementicles only in older individuals","Large myelinated for touch only","All of the above"],ans:3,ref:"Sheet 9 · All statements verified: fibronectin (cell adhesion), cementicles (age-related), large myelinated nerves (touch), small nerves (pain).",gulf:"All statements correct: fibronectin (cell adhesion), cementicles (age-related), large myelinated nerves (touch/pressure), small nerves (pain)."},
+  {id:114,sheet:9,q:"Cementicles are found in the:",opts:["Gingiva","Periodontal ligament","Alveolar bone","Cementum"],ans:1,ref:"Sheet 9 · Calcified bodies (cementicles) are sometimes found in the PDL space.",gulf:"Cementicles = in PDL. When fused with root surface → exocementoses. Increase with age."},
+  {id:115,sheet:9,q:"The most abundant group of fibers in the PDL are:",opts:["Trans septal","Horizontal","Oblique","Apical"],ans:2,ref:"Sheet 9 · Oblique group is the most numerous in the periodontal ligament.",gulf:"Oblique fibers = most abundant. They run at an angle from cementum (apically) to bone (coronally), suspending the tooth."},
+  {id:116,sheet:9,q:"Width of the Periodontal ligament is least at:",opts:["Cervical third","Apical third","Fulcrum of rotation","It has uniform width"],ans:2,ref:"Sheet 9 · PDL hourglass shape — narrowest at the fulcrum of rotation in the middle third of the root.",gulf:"PDL width: widest at cervical + apical (both ends). Narrowest at fulcrum (middle third). Average = 0.25 mm."},
+  {id:117,sheet:9,q:"The rests of Malassez in the periodontal ligament are derived from:",opts:["Dental pulp","Lamina propria","Odontogenic epithelium","Vestibular lamina"],ans:2,ref:"Sheet 9 · Rests of Malassez are remnants of HERS = odontogenic epithelium (IEE + OEE of dental organ).",gulf:"Rests of Malassez = remnants of HERS (odontogenic epithelium = IEE + OEE). Persist as quiescent epithelial islands in PDL."},
+  {id:118,sheet:9,q:"Development of supporting tissues of the tooth is initiated by:",opts:["Cells of dental follicle","Cells of odontogenic layer","Cementoblasts","Cells of the gingiva"],ans:0,ref:"Sheet 9 · The development of the ligament is from the cells of the dental follicle.",gulf:"Dental follicle → ALL supporting tissues: PDL (fibroblasts) + cementum (cementoblasts) + alveolar bone (osteoblasts)."},
+  {id:119,sheet:9,q:"The main function of the horizontal fibers of the PDL is:",opts:["Prevent extrusion","Prevent rotation","Maintains the mesiodistal width","All of the above"],ans:1,ref:"Sheet 9 · The horizontal group resist horizontal and tipping forces — prevent lateral tilting and rotation.",gulf:"Horizontal fibers: run at right angles to long axis. Function: resist horizontal/tipping/rotational forces."},
+  {id:120,sheet:9,q:"The periodontal ligament is approximately:",opts:["0.25 mm in thickness","0.5 mm in thickness","0.75 mm in thickness","1.0 mm in thickness"],ans:0,ref:"Sheet 9 · PDL average width = ~0.25 mm (range 0.10–0.38 mm).",gulf:"PDL = ~0.25 mm average. Functionally loaded teeth have wider PDL. Non-functioning teeth have narrower PDL."},
+  {id:121,sheet:9,q:"Narrowing of PDL in labially placed mandibular canine with age is due to:",opts:["Due to deposition of cementum and bone","Down growths of gingival epithelium","Gingival cysts from cell rests","Reversal of function of horizontal and oblique fibers"],ans:0,ref:"Sheet 9 · Cementum and bone continue slow deposition throughout life, progressively narrowing PDL space.",gulf:"PDL narrows with age due to: continuous cementum deposition on root + bone deposition on socket wall."},
+  {id:122,sheet:9,q:"Centre of the disc of TMJ is:",opts:["Avascular","Devoid of nervous tissue","Avascular and devoid of nervous tissue","None of the above"],ans:2,ref:"Sheet 13 · The central and anterior part of the disc is covered by thick fibrous tissue devoid of blood vessels and nerves.",gulf:"TMJ disc centre: avascular + aneural = withstands compressive forces. Disc periphery = vascular + innervated."},
+  {id:123,sheet:9,q:"The type of bone present in the labial area of the anterior teeth is:",opts:["Cortical","Cancellous","Osteophytic","Exophytic"],ans:0,ref:"Sheet 10 · In the anterior teeth, the cortical plates are thin and fused with the alveolar bone proper.",gulf:"Anterior teeth (labial): thin cortical plate fused with alveolar bone proper (no cancellous bone). Posterior teeth: cortical plates + cancellous bone."},
+  {id:124,sheet:9,q:"The component of future TMJ shows development at:",opts:["6 weeks","10 weeks","18 weeks","16 weeks"],ans:1,ref:"Sheet 13 · At the 10th and 16th W.I.U., further growth occurs by appearance of accessory cartilages.",gulf:"TMJ development: condylar + coronoid cartilages appear 10–16 weeks IU. TMJ cavity forms at 8–12 weeks IU."},
+  {id:125,sheet:9,q:"In a dried skull, holes on the lingual aspects of the deciduous teeth are called:",opts:["Volkmann canals","Canals of Hirschfeld and Zuckerkandl","Haversian canals","Gubernacular canals"],ans:3,ref:"Sheet 12 · Gubernacular canal: A small canal connecting the permanent tooth germ to the overlying gingiva.",gulf:"Gubernacular canals = tunnels in bone lingual to deciduous teeth through which the gubernacular cord passes."},
+  {id:126,sheet:9,q:"A special feature of the periodontal ligament fibroblasts is:",opts:["The number of organelles","Presence of actin fibers and shape change","Size of the cells","Collagen fiber formation"],ans:1,ref:"Sheet 9 · Ligament fibroblasts have a prominent actin network enabling cell shape change and motility.",gulf:"PDL fibroblasts = UNIQUE: prominent actin cytoskeleton → shape change, cell motility, and simultaneous collagen synthesis AND degradation."},
+];
+
+// ═══════════════ STATE ═══════════════
+const state = {
+  view: 'dashboard',
+  studySheet: 0, studySearch: '', studyOpen: new Set(),
+  examSheet: 0, examQ: [], examIdx: 0, examAns: {}, examSub: new Set(), examRes: {}, examDone: false,
+};
+
+// ═══════════════ HELPERS ═══════════════
+function qsBySheet(sheet){ return sheet===0 ? QUESTIONS : QUESTIONS.filter(q=>q.sheet===sheet); }
+const SHEET_INFO = {0:{label:'All Questions',icon:'📚',color:'#0d9488'},14:{label:'Oral Mucosa & Gingiva',icon:'🦷',color:'#0d9488'},15:{label:'Salivary Glands',icon:'🫧',color:'#3b82f6'},9:{label:'Periodontal Ligament',icon:'🔗',color:'#8b5cf6'}};
+
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+// ═══════════════ VIEWS ═══════════════
+function showView(v){
+  // close sidebar on mobile
+  if(window.innerWidth<=768) document.getElementById('sidebar').classList.remove('open');
+
+  // update nav active
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const nb = document.getElementById('nav-'+v);
+  if(nb) nb.classList.add('active');
+
+  if(v.startsWith('study-')){
+    const sheet = v==='study-all'?0:parseInt(v.split('-')[1]);
+    state.view='study'; state.studySheet=sheet; state.studyOpen=new Set(); state.studySearch='';
+    setTitle((SHEET_INFO[sheet]?.icon||'')+ ' Study: '+(SHEET_INFO[sheet]?.label||'All'));
+    renderStudy();
+    showProg(false);
+  } else if(v.startsWith('exam-')){
+    const sheet = v==='exam-all'?0:parseInt(v.split('-')[1]);
+    state.view='exam'; state.examSheet=sheet;
+    state.examQ=shuffle(qsBySheet(sheet));
+    state.examIdx=0; state.examAns={}; state.examSub=new Set(); state.examRes={}; state.examDone=false;
+    setTitle((SHEET_INFO[sheet]?.icon||'')+ ' Exam: '+(SHEET_INFO[sheet]?.label||'All'));
+    renderExam();
+    showProg(true);
+  } else {
+    state.view='dashboard';
+    setTitle('Dashboard');
+    renderDashboard();
+    showProg(false);
+  }
+  document.getElementById('view-content').scrollTop=0;
+}
+
+function setTitle(t){ document.getElementById('topbar-title').textContent=t; }
+function showProg(s){ document.getElementById('topbar-prog').style.display=s?'flex':'none'; document.getElementById('prog-label').style.display=s?'block':'none'; }
+
+// ═══════════════ DASHBOARD ═══════════════
+function renderDashboard(){
+  const el=document.getElementById('view-content');
+  el.innerHTML=`
+  <div class="fade">
+    <div class="card" style="background:linear-gradient(135deg,#0d9488,#0891b2);color:#fff;padding:22px;margin-bottom:20px;border:none">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <span style="font-size:36px">🦷</span>
+        <div>
+          <h2 style="font-size:20px;font-weight:900;margin-bottom:2px">اسئلة الخليج</h2>
+          <p style="font-size:12.5px;opacity:.9">Gulf Questions Bank · by Dr. Ghada · Oral Histology</p>
+        </div>
+      </div>
+      <p style="font-size:12px;opacity:.85">126 classified, answered, and referenced questions from the master sheets.</p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num">126</div><div class="stat-lbl">Total Questions</div></div>
+      <div class="stat-card"><div class="stat-num">52</div><div class="stat-lbl">Oral Mucosa & Gingiva</div></div>
+      <div class="stat-card"><div class="stat-num">31</div><div class="stat-lbl">Salivary Glands</div></div>
+      <div class="stat-card"><div class="stat-num">43</div><div class="stat-lbl">PDL Questions</div></div>
+    </div>
+
+    <p style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Study Sections</p>
+    ${[{s:14,icon:'🦷',color:'#0d9488',cnt:52,desc:'Keratinization types, gingival epithelium, taste buds, lamina propria, non-keratinocytes, rete pegs, JE'},{s:15,icon:'🫧',color:'#3b82f6',cnt:31,desc:'Major & minor glands, saliva composition, pH, ducts, myoepithelial cells, diseases'},{s:9,icon:'🔗',color:'#8b5cf6',cnt:43,desc:'PDL cells, principal fibers, Sharpey\'s fibers, rests of Malassez, age changes, collagen types'}].map(sec=>`
+    <div class="section-card" onclick="showView('study-${sec.s}')">
+      <div class="section-header-bar" style="background:linear-gradient(135deg,${sec.color}22,${sec.color}11)">
+        <span style="font-size:24px">${sec.icon}</span>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:800;color:var(--text)">${SHEET_INFO[sec.s].label}</div>
+          <div style="font-size:11px;color:var(--text3)">Sheet ${sec.s} · ${sec.cnt} Questions</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button onclick="event.stopPropagation();showView('study-${sec.s}')" style="padding:5px 10px;border-radius:7px;border:1.5px solid ${sec.color};background:transparent;color:${sec.color};font-size:11.5px;font-weight:700;cursor:pointer">📖 Study</button>
+          <button onclick="event.stopPropagation();showView('exam-${sec.s}')" style="padding:5px 10px;border-radius:7px;border:none;background:${sec.color};color:#fff;font-size:11.5px;font-weight:700;cursor:pointer">🎯 Exam</button>
+        </div>
+      </div>
+      <div class="section-body">${sec.desc}</div>
+    </div>`).join('')}
+
+    <div style="margin-top:16px;display:flex;gap:10px">
+      <button onclick="showView('study-all')" style="flex:1;padding:12px;border-radius:10px;border:2px solid var(--teal);background:var(--teal-dim);color:var(--teal);font-size:13px;font-weight:800;cursor:pointer">📖 Study All 126</button>
+      <button onclick="showView('exam-all')" style="flex:1;padding:12px;border-radius:10px;border:none;background:#0d9488;color:#fff;font-size:13px;font-weight:800;cursor:pointer">🎯 Full Exam 126</button>
+    </div>
+  </div>`;
+}
+
+// ═══════════════ STUDY MODE ═══════════════
+function renderStudy(){
+  const el=document.getElementById('view-content');
+  const qs=qsBySheet(state.studySheet);
+  const search=state.studySearch.toLowerCase().trim();
+  const filtered=search?qs.filter(q=>q.q.toLowerCase().includes(search)||q.opts.some(o=>o.toLowerCase().includes(search))||q.ans_text?.toLowerCase().includes(search)):qs;
+  const info=SHEET_INFO[state.studySheet];
+
+  el.innerHTML=`<div class="fade">
+    <div class="sh" style="margin-bottom:16px;border-radius:12px">
+      <h3>${info.icon} Study Mode: ${info.label}</h3>
+      <p>${qs.length} questions · Click any question to reveal answer</p>
+    </div>
+    <div class="filter-bar">
+      <input id="study-search" class="search-box" placeholder="🔍 Search questions..." value="${state.studySearch}" oninput="state.studySearch=this.value;renderStudy()" />
+      <button class="filter-chip ${state.studyOpen.size===filtered.length&&filtered.length>0?'on':''}" onclick="toggleAllStudy(${filtered.map(q=>q.id).join(',')})">
+        ${state.studyOpen.size>0?'Close All':'Open All'}
+      </button>
+      <span style="font-size:12px;color:var(--text3);padding:5px 6px">${filtered.length} shown</span>
+    </div>
+    ${filtered.map((q,i)=>{
+      const open=state.studyOpen.has(q.id);
+      return `<div class="q-card">
+        <button class="q-card-header" onclick="toggleStudy(${q.id})">
+          <span class="q-num">${q.id}</span>
+          <div style="flex:1;min-width:0">
+            <div class="q-text">${q.q}</div>
+            <div style="margin-top:5px">${q.opts.map((o,oi)=>`<span class="opt${oi===q.ans&&open?' correct':''}">${String.fromCharCode(65+oi)}. ${o}${oi===q.ans&&open?' ✓':''}</span>`).join('')}</div>
+          </div>
+          <span style="color:var(--text3);font-size:13px;flex-shrink:0">${open?'▲':'▼'}</span>
+        </button>
+        ${open?`<div class="q-card-body">
+          <div class="ans-box">✓ ${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</div>
+          <div class="ref-box">📚 ${q.ref}</div>
+          <div class="gulf-box"><span class="badge badge-gulf">Sheet ${q.sheet}</span> ${q.gulf}</div>
+        </div>`:''}
+      </div>`;
+    }).join('')}
+    ${filtered.length===0?`<div style="text-align:center;padding:40px;color:var(--text3)">No questions match your search.</div>`:''}
+  </div>`;
+}
+
+window.toggleStudy=(id)=>{
+  if(state.studyOpen.has(id)) state.studyOpen.delete(id); else state.studyOpen.add(id);
+  renderStudy();
+};
+
+window.toggleAllStudy=(...ids)=>{
+  if(state.studyOpen.size>=ids.length) state.studyOpen=new Set();
+  else ids.forEach(id=>state.studyOpen.add(id));
+  renderStudy();
+};
+
+// ═══════════════ EXAM MODE ═══════════════
+function renderExam(){
+  const el=document.getElementById('view-content');
+  if(state.examDone){ renderResult(); return; }
+  const qs=state.examQ;
+  const q=qs[state.examIdx];
+  if(!q){ renderResult(); return; }
+  const pct=Math.round(((state.examIdx+1)/qs.length)*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-label').textContent=`${state.examIdx+1}/${qs.length}`;
+  const ua=state.examAns[q.id];
+  const sub=state.examSub.has(q.id);
+  const correct=sub && state.examRes[q.id];
+  const wrong=sub && !state.examRes[q.id];
+
+  el.innerHTML=`<div class="exam-wrap fade">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <button class="exam-btn btn-gray" onclick="showView('dashboard')">‹ Exit</button>
+      <div style="text-align:center">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Question ${state.examIdx+1} of ${qs.length}</div>
+        <div style="height:6px;width:200px;border-radius:999px;background:var(--border);overflow:hidden">
+          <div style="height:100%;border-radius:999px;background:#0d9488;transition:width .3s;width:${pct}%"></div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text3);text-align:right">
+        <span style="color:#22c55e;font-weight:700">${Object.values(state.examRes).filter(Boolean).length}</span> correct
+      </div>
+    </div>
+
+    <div class="card" style="padding:20px;margin-bottom:14px">
+      <div style="display:flex;gap:8px;align-items:flex-start">
+        <span class="badge ${q.sheet===14?'badge-teal':q.sheet===15?'badge-blue':'badge-violet'}" style="flex-shrink:0;margin-top:2px">Sheet ${q.sheet}</span>
+        <p style="font-size:14.5px;font-weight:700;color:var(--text);line-height:1.6;flex:1">${q.q}</p>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      ${q.opts.map((opt,oi)=>{
+        let cls='exam-opt';
+        if(sub){
+          if(oi===q.ans) cls+=' correct'; else if(ua===String(oi)) cls+=' wrong'; else cls+='';
+        } else if(ua===String(oi)) cls+=' selected';
+        return `<button class="${cls}" ${sub?'disabled':''} onclick="selectExam('${q.id}','${oi}')">
+          <span style="font-weight:800;margin-right:6px">${String.fromCharCode(65+oi)}.</span>${opt}${sub&&oi===q.ans?' ✓':''}${sub&&ua===String(oi)&&oi!==q.ans?' ✗':''}
+        </button>`;
+      }).join('')}
+    </div>
+
+    ${sub?`<div class="card" style="padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:${correct?'#22c55e':'#ef4444'};margin-bottom:6px">${correct?'✓ Correct!':'✗ Incorrect'}</div>
+      <div class="ans-box" style="margin-bottom:8px">✓ ${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</div>
+      <div class="gulf-box"><span class="badge badge-gulf">Sheet ${q.sheet}</span> ${q.gulf}</div>
+    </div>`:''}
+
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="exam-btn btn-gray" onclick="navExam(-1)" ${state.examIdx===0?'disabled':''}>‹</button>
+      ${!sub
+        ?`<button class="exam-btn btn-teal" style="flex:1" onclick="submitExam('${q.id}')" ${ua===undefined?'disabled':''}>Submit Answer</button>`
+        :(state.examIdx===qs.length-1
+          ?`<button class="exam-btn btn-teal" style="flex:1;background:#059669" onclick="state.examDone=true;renderExam()">See Results ✓</button>`
+          :`<button class="exam-btn btn-teal" style="flex:1" onclick="navExam(1)">Next ›</button>`)
+      }
+      <button class="exam-btn btn-gray" onclick="navExam(1)" ${state.examIdx===qs.length-1||!sub?'disabled':''}>›</button>
+    </div>
+
+    <div style="margin-top:12px;text-align:center;font-size:11.5px;color:var(--text3)">
+      ${state.examSub.size} answered · ${qs.length-state.examIdx-1} remaining
+    </div>
+  </div>`;
+}
+
+window.selectExam=(id,val)=>{ state.examAns[id]=val; renderExam(); };
+
+window.submitExam=(id)=>{
+  const q=state.examQ.find(x=>String(x.id)===String(id));
+  if(!q) return;
+  const ua=state.examAns[id];
+  if(ua===undefined) return;
+  const correct=parseInt(ua)===q.ans;
+  state.examSub.add(Number(id));
+  state.examRes[Number(id)]=correct;
+  if(state.examIdx===state.examQ.length-1) setTimeout(()=>{state.examDone=true;renderExam();},800);
+  renderExam();
+};
+
+window.navExam=(dir)=>{
+  const n=state.examIdx+dir;
+  if(n>=0&&n<state.examQ.length){ state.examIdx=n; renderExam(); }
+};
+
+function renderResult(){
+  const qs=state.examQ;
+  const total=qs.length;
+  const score=Object.values(state.examRes).filter(Boolean).length;
+  const pct=Math.round(score/total*100);
+  const gr=pct>=80?{bg:'linear-gradient(135deg,#059669,#0d9488)',msg:'Excellent! 🏆',emoji:'🏆'}:pct>=60?{bg:'linear-gradient(135deg,#d97706,#ea580c)',msg:'Good effort! Keep going 💪',emoji:'💪'}:{bg:'linear-gradient(135deg,#e11d48,#dc2626)',msg:'Keep studying! You\'ve got this 📚',emoji:'📚'};
+  document.getElementById('prog-fill').style.width='100%';
+  document.getElementById('prog-label').textContent=`${pct}%`;
+  
+  const el=document.getElementById('view-content');
+  el.innerHTML=`<div class="exam-wrap fade">
+    <div class="score-card" style="background:${gr.bg}">
+      <div style="font-size:48px;margin-bottom:4px">${gr.emoji}</div>
+      <div style="font-size:52px;font-weight:900">${pct}%</div>
+      <p style="font-size:15px;opacity:.9;margin:4px 0">${score} / ${total} correct</p>
+      <p style="font-size:13px;opacity:.85">${gr.msg}</p>
+    </div>
+
+    <div class="stat-grid" style="margin-bottom:16px">
+      <div class="stat-card"><div class="stat-num" style="color:#22c55e">${score}</div><div class="stat-lbl">Correct</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#ef4444">${total-score}</div><div class="stat-lbl">Wrong</div></div>
+      <div class="stat-card"><div class="stat-num">${pct}%</div><div class="stat-lbl">Score</div></div>
+      <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-lbl">Total</div></div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button class="exam-btn btn-gray" style="flex:1;padding:11px" onclick="retryExam()">↺ Retry Same</button>
+      <button class="exam-btn btn-teal" style="flex:1;padding:11px" onclick="showView('dashboard')">🏠 Dashboard</button>
+    </div>
+
+    <div style="margin-top:20px">
+      <p style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Review Wrong Answers</p>
+      ${qs.filter(q=>!state.examRes[q.id]).map(q=>`
+      <div class="card" style="padding:14px;margin-bottom:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.5">${q.q}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          ${q.opts.map((o,oi)=>`<span style="font-size:11.5px;padding:3px 8px;border-radius:6px;${oi===q.ans?'background:#f0fdf4;color:#166534;font-weight:700;border:1.5px solid #22c55e':state.examAns[q.id]===String(oi)?'background:#fff1f2;color:#991b1b;border:1.5px solid #f87171':'background:var(--bg3);color:var(--text3);border:1.5px solid var(--border)'}">
+            ${String.fromCharCode(65+oi)}. ${o}${oi===q.ans?' ✓':''}
+          </span>`).join('')}
+        </div>
+        <div class="gulf-box"><span class="badge badge-gulf">Sheet ${q.sheet}</span> ${q.gulf}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+window.retryExam=()=>{
+  state.examQ=shuffle(qsBySheet(state.examSheet));
+  state.examIdx=0; state.examAns={}; state.examSub=new Set(); state.examRes={}; state.examDone=false;
+  renderExam();
+};
+
+// ═══════════════ DARK MODE ═══════════════
+window.toggleDark=()=>{
+  const d=document.documentElement.classList.toggle('dark');
+  document.getElementById('dark-btn').textContent=d?'☀️':'🌙';
+  localStorage.setItem('theme',d?'dark':'light');
+};
+(()=>{
+  const saved=localStorage.getItem('theme');
+  const sysDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if(saved==='dark'||(!saved&&sysDark)){
+    document.documentElement.classList.add('dark');
+    setTimeout(()=>{const b=document.getElementById('dark-btn');if(b)b.textContent='☀️';},50);
+  }
+})();
+
+// ═══════════════ SIDEBAR TOGGLE ═══════════════
+window.toggleSidebar=()=>document.getElementById('sidebar').classList.toggle('open');
+
+function checkMobile(){
+  const mob=window.innerWidth<=768;
+  document.getElementById('mob-toggle').style.display=mob?'flex':'none';
+}
+window.addEventListener('resize',checkMobile);
+checkMobile();
+
+// ═══════════════ INIT ═══════════════
+showView('dashboard');
+</script>
+</body>
+</html>
